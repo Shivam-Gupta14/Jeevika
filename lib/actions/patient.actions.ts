@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-import { ID, Query } from "node-appwrite"
+import { ID, Models, Query } from "node-appwrite"
 import { users } from "../appwriet.config"
 
 // Define an interface for Appwrite API error
@@ -29,4 +29,17 @@ export const createUser = async (user: CreateUserParams) => {
       throw error; // Rethrow the error to handle it in the form submission
     }
   };
+  export const getUser = async (userId: string) => {
+    try {
+      const user = await users.get(userId);
   
+      return parseStringify(user);
+    } catch (error) {
+      console.error(
+        "An error occurred while retrieving the user details:",
+        error
+      );
+    }
+  };
+  
+
