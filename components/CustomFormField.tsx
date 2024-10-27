@@ -13,8 +13,7 @@ import {
   SelectTrigger,
   SelectContent,
   SelectValue,
-  SelectItem,
-} from "@radix-ui/react-select";
+} from "@/components/ui/select";
 // Make sure these are correctly imported from their respective locations
 
 import { Control, Controller, FieldValues } from "react-hook-form";
@@ -28,6 +27,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
 import { GenderOptions } from "@/constants"; // Make sure GenderOptions is defined and imported correctly
 import { Label } from "@radix-ui/react-label";
+import { Textarea } from "./ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox"
+
 
 // Define the structure of the form data
 interface FormData {
@@ -119,7 +121,17 @@ const RenderInput = ({
           </FormControl>
         </div>
       );
-
+      case FormFieldType.TEXTAREA:
+        return (
+          <FormControl>
+            <Textarea
+              placeholder={props.placeholder}
+              {...field}
+              className="shad-textArea"
+              disabled={props.disabled}
+            />
+          </FormControl>
+        );
     case FormFieldType.GENDER_SELECT:
       return (
         <FormControl>
@@ -154,9 +166,24 @@ const RenderInput = ({
             </Select>
           </FormControl>
         );
-
-    default:
-      return <div>Unsupported field type</div>;
+        case FormFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <div className="flex items-center gap-4">
+            <Checkbox
+              id={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+            <label htmlFor={props.name} className="checkbox-label">
+              {props.label}
+            </label>
+          </div>
+        </FormControl>
+      );
+      
+    case FormFieldType.SKELETON:
+      return props.renderSkeleton ? props.renderSkeleton(field) : null;
   }
 };
 
