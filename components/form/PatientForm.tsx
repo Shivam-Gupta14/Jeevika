@@ -24,6 +24,9 @@ export enum FormFieldType {
 const PatientForm = () => {
   const router = useRouter(); 
   const [isLoading, setIsLoading] = useState(false);
+  const defaultClick=()=>{
+    console.log("clicked default")
+  }
 
   // Initialize form with validation schema
   const formMethods = useForm<z.infer<typeof UserFormValidation>>({
@@ -76,7 +79,8 @@ const PatientForm = () => {
           iconSrc="/assets/icons/user.svg"
           iconAlt="user"
         />
-
+<h2>hello</h2>
+<button onClick={defaultClick}>Default btn</button>
         {/* Email Field */}
         <CustomFormField
           fieldType={FormFieldType.INPUT}
@@ -100,7 +104,7 @@ const PatientForm = () => {
         />
 
         {/* Submit Button */}
-        <SubmitButton isLoading={isLoading} className="GetButton">
+        <SubmitButton isLoading={isLoading} className="GetButton" >
           Get Started
         </SubmitButton>
       </form>
