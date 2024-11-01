@@ -39,7 +39,38 @@ const PatientForm = () => {
   });
 
   // Define form submission handler
-  const onSubmit = async (values: z.infer<typeof UserFormValidation>) => {
+  const handleDebugClick = async (e) => {
+    e.preventDefault()
+    const values = formMethods.getValues();
+    
+      const userData = {
+        name: values.name,
+        email: values.email,
+        phone: values.phonenumber,
+      };
+      try {
+        const userData = {
+          name: values.name,
+          email: values.email,
+          phone: values.phonenumber,
+        };
+        console.log(userData)
+  
+        const User = await createUser(userData);
+  
+        if (User) {
+          router.push(`/patients/${User.$id}/register`); 
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+ };
+ 
+
+  const onSubmit = async (values: z.infer<typeof UserFormValidation>,event) => {
+    event.preventDefault();
     setIsLoading(true);
 
     try {
@@ -48,6 +79,7 @@ const PatientForm = () => {
         email: values.email,
         phone: values.phonenumber,
       };
+      console.log(userData)
 
       const User = await createUser(userData);
 
@@ -60,10 +92,12 @@ const PatientForm = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <FormProvider {...formMethods}>  {/* Wrap with FormProvider */}
-      <form onSubmit={formMethods.handleSubmit(onSubmit)} className="flex-1 space-y-6">
+    
+      <form onSubmit={handleDebugClick} className="flex-1 space-y-6">
         <section className="mb-12 space-y-4">
           <h1 className="header">Hi there 👋</h1>
           <p className="text-dark-700">Get started with appointments.</p>
@@ -79,8 +113,6 @@ const PatientForm = () => {
           iconSrc="/assets/icons/user.svg"
           iconAlt="user"
         />
-<h2>hello</h2>
-<button onClick={defaultClick}>Default btn</button>
         {/* Email Field */}
         <CustomFormField
           fieldType={FormFieldType.INPUT}
