@@ -43,11 +43,6 @@ const PatientForm = () => {
     e.preventDefault()
     const values = formMethods.getValues();
     
-      const userData = {
-        name: values.name,
-        email: values.email,
-        phone: values.phonenumber,
-      };
       try {
         const userData = {
           name: values.name,
@@ -69,31 +64,7 @@ const PatientForm = () => {
  };
  
 
-  const onSubmit = async (values: z.infer<typeof UserFormValidation>,event) => {
-    event.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const userData = {
-        name: values.name,
-        email: values.email,
-        phone: values.phonenumber,
-      };
-      console.log(userData)
-
-      const User = await createUser(userData);
-
-      if (User) {
-        router.push(`/patients/${User.$id}/register`); 
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-
+ 
   return (
     <FormProvider {...formMethods}>  {/* Wrap with FormProvider */}
     
