@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-import { ID, Models, Query } from "node-appwrite";
+import { ID, Query } from "node-appwrite"
 import { InputFile } from 'node-appwrite/file';
-
 import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, storage, users } from "../appwriet.config"
-// Define an interface for Appwrite API error
-interface AppwriteError extends Error {
-  code: number;
-  message: string;
-}
+import { parseStringify } from "../utils";
+
 
 // Define CreateUserParams interface for better type safety
 interface CreateUserParams {
@@ -54,22 +50,19 @@ export const createUser = async (user: CreateUserParams) => {
       const documents = await users.list([Query.equal('email', [user.email])]);
       return documents?.users[0];
     }
-    throw error; // Rethrow the error to handle it in the form submission
-  }
-};
-
-// Function to get a user
-export const getUser = async (userId: string) => {
-  try {
-    const user = await users.get(userId);
-    return deepCopy(user); // Return a deep copy of the user object
-  } catch (error) {
-    console.error("An error occurred while retrieving the user details:", error);
-    // Optionally, rethrow the error or return a default value
-    throw error; // This allows the caller to handle the error appropriately
-  }
-};
-
+  };
+  export const getUser = async (userId: string) => {
+    try {
+      const user = await users.get(userId);
+  
+      return parseStringify(user);
+    } catch (error) {
+      console.error(
+        "An error occurred while retrieving the user details:",
+        error
+      );
+    }
+  };
   export const registerPatient = async ({
     identificationDocument,
     ...patient
@@ -102,7 +95,7 @@ export const getUser = async (userId: string) => {
         }
       );
   
-      return deepCopy(newPatient);
+      return parseStringify(newPatient);
     } catch (error) {
       console.error("An error occurred while creating a new patient:", error);
     }

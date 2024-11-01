@@ -23,6 +23,9 @@ export enum FormFieldType {
 const PatientForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const defaultClick=()=>{
+    console.log("clicked default")
+  }
 
   // Initialize form with validation schema
   const formMethods = useForm<z.infer<typeof UserFormValidation>>({
@@ -35,49 +38,51 @@ const PatientForm = () => {
   });
 
   // Define form submission handler
-  const onSubmit = async (values: z.infer<typeof UserFormValidation>) => {
-    setIsLoading(true);
-
-    try {
-      const userData = {
-        name: values.name,
-        email: values.email,
-        phone: values.phonenumber,
-      };
-      console.log(userData);
-
-      const User = await createUser(userData);
-
-      if (User) {
-        router.push(`/patients/${User.$id}/register`);
+  const handleDebugClick = async (e) => {
+    e.preventDefault()
+    const values = formMethods.getValues();
+    
+      try {
+        const userData = {
+          name: values.name,
+          email: values.email,
+          phone: values.phonenumber,
+        };
+        console.log(userData)
+  
+        const User = await createUser(userData);
+  
+        if (User) {
+          router.push(`/patients/${User.$id}/register`); 
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+ };
+ 
 
+ 
   return (
-    <FormProvider {...formMethods}>
-      <form onSubmit={formMethods.handleSubmit(onSubmit)} className="flex-1 space-y-6">
+    <FormProvider {...formMethods}>  {/* Wrap with FormProvider */}
+    
+      <form onSubmit={handleDebugClick} className="flex-1 space-y-6">
         <section className="mb-12 space-y-4">
           <h1 className="header">Hi there 👋</h1>
           <p className="text-dark-700">Get started with appointments.</p>
         </section>
 
         {/* Full Name Field */}
-        <div className="form-group">
-          <label htmlFor="name">Full Name</label>
-          <input
-            type="text"
-            id="name"
-            placeholder="Shivam Gupta"
-            {...formMethods.register("name")}
-            className="input"
-          />
-        </div>
-
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={formMethods.control}
+          name="name"
+          label="Full Name"
+          placeholder="Shivam Gupta"
+          iconSrc="/assets/icons/user.svg"
+          iconAlt="user"
+        />
         {/* Email Field */}
         <div className="form-group">
           <label htmlFor="email">Email</label>
@@ -103,7 +108,7 @@ const PatientForm = () => {
         </div>
 
         {/* Submit Button */}
-        <SubmitButton isLoading={isLoading} className="GetButton">
+        <SubmitButton isLoading={isLoading} className="GetButton" >
           Get Started
         </SubmitButton>
       </form>
