@@ -39,6 +39,7 @@ function deepCopy<T>(obj: T): T {
 
 // Sample createUser function
 export const createUser = async (user: CreateUserParams) => {
+  console.log(user)
   try {
     const newUser = await users.create(
       ID.unique(),

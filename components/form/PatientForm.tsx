@@ -5,24 +5,23 @@ import { createUser } from "@/lib/actions/patient.actions";
 import { UserFormValidation } from "@/lib/Validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form"; // Import FormProvider
+import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
-import { CustomFormField } from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 
+// Enums for form field types
 export enum FormFieldType {
   INPUT = "input",
   TEXTAREA = "textarea",
   PHONE_INPUT = "phoneInput",
   CHECKBOX = "checkbox",
   DATE_PICKER = "datePicker",
-  SKELETON = "skeleton",
   GENDER_SELECT = "GENDER_SELECT",
   SELECT = "SELECT",
 }
 
 const PatientForm = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   // Initialize form with validation schema
@@ -45,11 +44,12 @@ const PatientForm = () => {
         email: values.email,
         phone: values.phonenumber,
       };
+      console.log(userData);
 
       const User = await createUser(userData);
 
       if (User) {
-        router.push(`/patients/${User.$id}/register`); 
+        router.push(`/patients/${User.$id}/register`);
       }
     } catch (error) {
       console.log(error);
@@ -59,7 +59,7 @@ const PatientForm = () => {
   };
 
   return (
-    <FormProvider {...formMethods}>  {/* Wrap with FormProvider */}
+    <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(onSubmit)} className="flex-1 space-y-6">
         <section className="mb-12 space-y-4">
           <h1 className="header">Hi there 👋</h1>
@@ -67,37 +67,40 @@ const PatientForm = () => {
         </section>
 
         {/* Full Name Field */}
-        <CustomFormField
-          fieldType={FormFieldType.INPUT}
-          control={formMethods.control}
-          name="name"
-          label="Full Name"
-          placeholder="Shivam Gupta"
-          iconSrc="/assets/icons/user.svg"
-          iconAlt="user"
-        />
+        <div className="form-group">
+          <label htmlFor="name">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Shivam Gupta"
+            {...formMethods.register("name")}
+            className="input"
+          />
+        </div>
 
         {/* Email Field */}
-        <CustomFormField
-          fieldType={FormFieldType.INPUT}
-          control={formMethods.control}
-          name="email"
-          label="Email"
-          placeholder="Shivamgupta@gmail.com"
-          iconSrc="/assets/icons/email.svg"
-          iconAlt="email"
-        />
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Shivamgupta@gmail.com"
+            {...formMethods.register("email")}
+            className="input"
+          />
+        </div>
 
         {/* Phone Number Field */}
-        <CustomFormField
-          fieldType={FormFieldType.PHONE_INPUT}
-          control={formMethods.control}
-          name="phonenumber"
-          label="Mobile Number"
-          placeholder="(91) 25454"
-          country="IN"
-          international
-        />
+        <div className="form-group">
+          <label htmlFor="phonenumber">Mobile Number</label>
+          <input
+            type="tel"
+            id="phonenumber"
+            placeholder="(91) 25454"
+            {...formMethods.register("phonenumber")}
+            className="input"
+          />
+        </div>
 
         {/* Submit Button */}
         <SubmitButton isLoading={isLoading} className="GetButton">
