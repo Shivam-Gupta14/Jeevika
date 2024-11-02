@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
+import { CustomFormField } from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { Audio } from "react-loader-spinner";
 
@@ -57,7 +58,10 @@ const PatientForm = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        
+        setIsLoading(false);
+      }, 1500);
     }
   };
 
