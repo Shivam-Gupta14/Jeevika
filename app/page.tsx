@@ -1,10 +1,14 @@
 import PatientForm from "@/components/form/PatientForm"; // Assuming this is the correct path
 import Image from "next/image";
 import Link from "next/link";
+import { Audio } from "react-loader-spinner";
+
 
 const Home = () => {
   return (
+    
     <div className="flex h-screen max-h-screen">
+      
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[496px]">
           <Image

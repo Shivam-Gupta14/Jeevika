@@ -15,7 +15,7 @@ export const {
 const client = new sdk.Client();
 
 // Log the API key for debugging (ensure not to expose this in production)
-console.log("API_KEY:", API_KEY);
+// console.log("API_KEY:", API_KEY);
 
 // Set the client endpoint, project, and API key
 try {

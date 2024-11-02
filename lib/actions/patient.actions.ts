@@ -22,6 +22,7 @@ export const createUser = async (user: CreateUserParams) => {
       if (error?.code === 409) {  // Handling 'user already exists' error
         const documents = await users.list([Query.equal('email', [user.email])]);
         return documents?.users[0];
+        
       }
       throw error; // Rethrow the error to handle it in the form submission
     }
