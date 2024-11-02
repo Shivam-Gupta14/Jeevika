@@ -5,19 +5,18 @@ import { createUser } from "@/lib/actions/patient.actions";
 import { UserFormValidation } from "@/lib/Validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form"; // Import FormProvider
+import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
-import { CustomFormField } from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { Audio } from "react-loader-spinner";
 
+// Enums for form field types
 export enum FormFieldType {
   INPUT = "input",
   TEXTAREA = "textarea",
   PHONE_INPUT = "phoneInput",
   CHECKBOX = "checkbox",
   DATE_PICKER = "datePicker",
-  SKELETON = "skeleton",
   GENDER_SELECT = "GENDER_SELECT",
   SELECT = "SELECT",
 }

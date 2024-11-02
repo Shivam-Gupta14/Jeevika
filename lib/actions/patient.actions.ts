@@ -6,6 +6,33 @@ import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PRO
 import { parseStringify } from "../utils";
 
 
+// Define CreateUserParams interface for better type safety
+interface CreateUserParams {
+  email: string;
+  phone: string;
+  name: string;
+}
+
+// Deep copy function
+function deepCopy<T>(obj: T): T {
+  // Check for null or undefined
+  if (obj === null || typeof obj !== 'object') {
+    return obj; // Return the value if obj is not an object
+  }
+
+  // Create an array or object to hold the values
+  const copy: T = Array.isArray(obj) ? [] : {} as T;
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      // Recursively copy each property
+      copy[key] = deepCopy(obj[key]);
+    }
+  }
+
+  return copy;
+}
+
 // Sample createUser function
 export const createUser = async (user: CreateUserParams) => {
     try {
