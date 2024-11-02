@@ -95,6 +95,7 @@ export const createUser = async (user: CreateUserParams) => {
             ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}`
             : null,
           ...patient,
+          
         }
       );
   
