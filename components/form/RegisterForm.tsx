@@ -89,6 +89,7 @@ const RegisterForm = ({ user }: { user: User }) => {
       setIsLoading(false);
     };
 
+    
   return (
     <FormProvider {...formMethods}>
       <form
