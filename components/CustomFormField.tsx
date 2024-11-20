@@ -206,3 +206,5 @@ export const CustomFormField = (props: CustomProps) => {
     />
   );
 };
+
+export { FormFieldType };
