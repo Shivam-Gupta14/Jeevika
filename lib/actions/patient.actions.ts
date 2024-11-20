@@ -1,55 +1,49 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { ID, Query, Client, Databases, Storage, Users } from "node-appwrite";
-import { InputFile } from "node-appwrite/file";
+import { ID, Query } from "node-appwrite";
+import { InputFile } from 'node-appwrite/file';
+import fs from 'fs';
+
 import {
   BUCKET_ID,
   DATABASE_ID,
-  databases,
   ENDPOINT,
   PATIENT_COLLECTION_ID,
   PROJECT_ID,
+  databases,
   storage,
   users,
 } from "../appwrite.config";
 import { parseStringify } from "../utils";
 
-// Types for your parameters
-interface CreateUserParams {
-  email: string;
-  phone: string;
-  name: string;
-}
-
-interface RegisterUserParams {
-  email: string;
-  phone: string;
-  name: string;
-  identificationDocument?: FormData;
-  [key: string]: any;
-}
-
-// Sample createUser function
+// CREATE APPWRITE USER
 export const createUser = async (user: CreateUserParams) => {
   try {
-    const newUser = await users.create(
+    // Create new user
+    const newuser = await users.create(
       ID.unique(),
       user.email,
       user.phone,
       undefined,
       user.name
     );
-    return newUser; // Ensure it returns the new user object
+
+    return parseStringify(newuser);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error?.code === 409) { // Handling 'user already exists' error
-      const documents = await users.list([Query.equal("email", [user.email])]);
-      return documents?.users[0];
+    // Check existing user
+    if (error && error?.code === 409) {
+      const existingUser = await users.list([
+        Query.equal("email", [user.email]),
+      ]);
+
+      return existingUser.users[0];
     }
-    throw error; // Rethrow the error to handle it in the form submission
+    console.error("An error occurred while creating a new user:", error);
   }
 };
 
+// GET USER
 export const getUser = async (userId: string) => {
   try {
     const user = await users.get(userId);
@@ -63,29 +57,22 @@ export const getUser = async (userId: string) => {
   }
 };
 
-export const registerPatient = async ({
-  identificationDocument,
+// REGISTER PATIENT WITH BUFFER
+export const registerPatientWithBuffer = async ({
+  identificationDocumentPath,
   ...patient
 }: RegisterUserParams) => {
   try {
-    // Upload file
+    // Check if the file path for identification document exists
     let file;
-    if (identificationDocument) {
-      // Convert the file Blob to Buffer
-      const buffer = await identificationDocument
-        .get("blobFile")
-        .arrayBuffer();
-
-      // Create InputFile from Buffer
-      const inputFile = InputFile.fromBuffer(
-        Buffer.from(buffer),
-        identificationDocument.get("fileName")
-      );
+    if (identificationDocumentPath) {
+      const fileBuffer = fs.readFileSync(identificationDocumentPath); // Read file as Buffer
+      const inputFile = InputFile.fromBuffer(fileBuffer, 'identification-document.pdf'); // Convert buffer to InputFile
 
       file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
     }
 
-    // Create new patient document
+    // Now create the patient record with file info
     const newPatient = await databases.createDocument(
       DATABASE_ID!,
       PATIENT_COLLECTION_ID!,
@@ -102,5 +89,23 @@ export const registerPatient = async ({
     return parseStringify(newPatient);
   } catch (error) {
     console.error("An error occurred while creating a new patient:", error);
+  }
+};
+
+// GET PATIENT
+export const getPatient = async (userId: string) => {
+  try {
+    const patients = await databases.listDocuments(
+      DATABASE_ID!,
+      PATIENT_COLLECTION_ID!,
+      [Query.equal("userId", [userId])]
+    );
+
+    return parseStringify(patients.documents[0]);
+  } catch (error) {
+    console.error(
+      "An error occurred while retrieving the patient details:",
+      error
+    );
   }
 };

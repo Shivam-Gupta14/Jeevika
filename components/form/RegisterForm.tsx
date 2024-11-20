@@ -2,7 +2,7 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { registerPatient } from "@/lib/actions/patient.actions";
+import { registerPatientWithBuffer } from "@/lib/actions/patient.actions";
 import Image from "next/image";
 import { PatientFormValidation } from "@/lib/Validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,7 +77,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           privacyConsent: values.privacyConsent,
         };
   
-        const newPatient = await registerPatient(patient);
+        const newPatient = await registerPatientWithBuffer(patient);
   
         if (newPatient) {
           router.push(`/patients/${user.$id}/new-appointment`);
@@ -360,6 +360,18 @@ const RegisterForm = ({ user }: { user: User }) => {
         </section>
         {/* Submit Button */}
         <SubmitButton isLoading={isLoading}>Submit and Continue</SubmitButton>
+        <button 
+  type="button" 
+  onClick={(e) => {
+    e.preventDefault(); // Prevent form submission
+    router.push(`/patients/${user.$id}/new-appointment`); // Use the user's ID in the URL
+  }} 
+  className="button-class" // Add your button classes here
+>
+  Next
+</button>
+
+
       </form>
     </FormProvider>
   );
